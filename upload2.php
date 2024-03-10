@@ -216,9 +216,14 @@
             </td>
         </tr>
         <tr>
-            <td><label for="image">Select Image:</label></td>
-            <td><input type="file" id="image" name="image" accept="image/*" required></td>
-        </tr>
+    <td><label for="image">Select Image:</label></td>
+    <td>
+        <input type="file" id="image" name="image" accept="image/*" onchange="displayImagePreview(event)" required>
+        <br>
+        <img id="image-preview" src="#" alt="Image Preview" style="max-width: 200px; max-height: 200px; display: none;">
+    </td>
+</tr>
+
         <tr>
             <td colspan="2" class="button-container"><input type="submit" value="Upload"></td>
         </tr>
@@ -251,6 +256,21 @@
 
         return true;
     }
+
+    function displayImagePreview(event) {
+        var preview = document.getElementById('image-preview');
+        var file = event.target.files[0];
+
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 </script>
+
 </body>
 </html>

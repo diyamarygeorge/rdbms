@@ -172,6 +172,16 @@ $conn->close();
             visibility: visible;
             opacity: 1;
         }
+        .log2 {
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        position: absolute;
+        top: 85%;
+        right: 18%; /* Adjust the value as needed */
+        transform: translateY(-50%);
+        z-index: 3; /* Ensure link is clickable */
+    }   
     </style>
 </head>
 <body>
@@ -201,7 +211,7 @@ $conn->close();
         <input type="submit" name="signup" value="Sign Up">
     </form>
 </div>
-
+<div class="log2"><a href="login.php" style="color: gold;">Already an existing user?? Sign in</a></div>
 <script>
     function validateForm() {
         var name = document.getElementById('name').value;

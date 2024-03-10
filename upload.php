@@ -1,76 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
 
     <style>
-        .xyz {
-            position: absolute;
-            top: 100px;
-            width: 100%;
-            color: grey;
-            text-align: center;
-        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
+    font-family: Arial, sans-serif;
+    background-image: url('imgs/bg3.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    background-color: #000;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-        .image-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 50px 20px 20px;
-        }
+h1 {
+    color: #000000;
+    margin-bottom: 20px;
+}
 
-        .image-container img {
-            width: 15%;
-            height: auto;
-            border-radius: 20px;
-            transition: transform 0.5s ease;
-            position: relative;
-            z-index: 1;
-        }
+.top-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: black;
+    padding: 10px;
+    border-radius: 20px;
+}
 
-        .delete-button,
-        .upload-button {
-            background-color: red;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-            margin-right: 10px;
-        }
+.top-right a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.top-right a:hover {
+    color: rgb(255, 119, 0);
+}
+
+.top-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: black;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.image-container img {
+    width: 150px;
+    height: auto;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.image-container img:hover {
+    transform: scale(1.1);
+}
+
+.button-container {
+    margin-top: 20px;
+}
+
+.delete-button,
+.upload-button {
+    background-color: #ff0000;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+.delete-button:hover,
+.upload-button:hover {
+    background-color: #cc0000;
+}
     </style>
 </head>
 <body>
 
-<div class="xyz">
-    <div class="top-left">
-        <?php
-        session_start();
-        // Display username if logged in
-        if (isset($_SESSION['username'])) {
-            echo 'Logged in as: ' . $_SESSION['username'];
-        } else {
-            echo 'Login!!';
-        }
-        ?>
-    </div>
+<div class="top-left">
+    <?php
+    session_start();
+    // Display username if logged in
+    if (isset($_SESSION['username'])) {
+        echo 'Logged in as: ' . $_SESSION['username'];
+    } else {
+        echo 'Login!!';
+    }
+    ?>
 </div>
 
-<h1>Profile</h1>
+<div class="top-right">
+    <a href="welcome.php">Home</a>
+</div>
+
+<h1>PROFILE PAGE</h1>
 
 <div class="image-container">
     <?php
@@ -108,11 +155,10 @@
     ?>
 </div>
 
-<a class="delete-button" href="delete.php">Delete Artwork</a>
-<a class="upload-button" href="upload2.php">Upload</a>
+<div class="button-container">
+    <a class="delete-button" href="delete.php">Delete Artwork</a>
+    <a class="upload-button" href="upload2.php">Upload</a>
+</div>
 
 </body>
 </html>
-
-
-

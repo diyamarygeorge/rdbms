@@ -54,66 +54,107 @@ if (isset($_SESSION['username'])) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remove Images</title>
     <style>
         /* Add your CSS styles here */
         body {
             margin: 0;
             padding: 0;
-            background-color: white;
-            font-family: 'Blancha', sans-serif;
+            background-image: url('imgs/bg4.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: repeat;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
         }
 
         .black-bar {
-            background-color: yellow;
-            color: black;
+            color: rgb(255, 255, 255);
             padding: 10px;
             text-align: center;
+            color: black;
         }
 
         .image-container {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            padding: 50px 20px 20px;
+            padding: 20px;
+            justify-content: center;
         }
 
         .image-container img {
-            width: 200px;
+            width: 150px;
             height: auto;
             border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.1);
         }
 
         .delete-button {
             text-align: center;
             margin-top: 20px;
-            font-family: 'Arial', sans-serif;
         }
 
         .delete-link {
             display: inline-block;
             padding: 10px 20px;
-            background-color: goldenrod;
-            color: black;
+            background-color: #ff0000;
+            color: #fff;
             text-decoration: none;
             border-radius: 5px;
             font-size: 16px;
             font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-link:hover {
+            background-color: #cc0000;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .back-button a {
+            color: black;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .back-button a:hover {
+            color: #ff7700; /* Change color on hover if needed */
         }
     </style>
 </head>
 <body>
 
 <div class="black-bar">
+    <div class="back-button">
+        <a href="upload.php">&#8592; Back</a>
+    </div>
     <h1>Remove Images</h1>
 </div>
 
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" onsubmit="return confirm('Are you sure you want to delete the selected images?');">
     <div class="image-container">
         <?php foreach ($imagePaths as $image): ?>
             <label>
@@ -129,4 +170,3 @@ if (isset($_SESSION['username'])) {
 
 </body>
 </html>
-            

@@ -6,14 +6,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: black;
+            color:white;
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         h1 {
@@ -82,15 +83,86 @@
             display: none;
             z-index: 999;
         }
+
+        .image-container {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .image-thumb {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .image-thumb.selected {
+            border-color: #007bff;
+        }
+
+        .delete-btn {
+            padding: 8px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: black;
+            margin: 20px 0;
+            z-index: 2;
+        }
     </style>
     <script>
-        function closeMsg() {
-            var msg = document.getElementById('successMsg');
-            setTimeout(function () {
-                msg.style.display = 'none';
-            }, 3000);
+    // Function to handle image selection
+    function toggleSelection(image) {
+        image.classList.toggle('selected');
+    }
+
+    // Function to delete selected images
+    function deleteImages() {
+        var selectedImages = document.querySelectorAll('.image-thumb.selected');
+        if (selectedImages.length === 0) {
+            alert("Please select at least one image to delete.");
+            return;
         }
-    </script>
+
+        if (confirm("Are you sure you want to delete the selected images?")) {
+            // Prepare an array to hold the image paths
+            var imagePaths = [];
+            selectedImages.forEach(function (image) {
+                imagePaths.push(image.getAttribute('src'));
+                image.parentNode.removeChild(image); // Remove from DOM
+            });
+
+            // Send the array of image paths to a PHP script for deletion
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'delete_images.php';
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'imagePaths';
+            input.value = JSON.stringify(imagePaths);
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+
 </head>
 <body>
 
@@ -130,15 +202,42 @@
     $conn->close();
     ?>
 
-    <button type="submit" name="deleteImages">Delete Selected User's Data</button>
+    <button type="submit" name="deleteUser">Delete Selected User's Data</button>
 </form>
+<hr>
+<h1>DELETE IMAGES</h1>
+<div class="image-container">
+    <?php
+    // Establish connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query to fetch images
+    $imagesQuery = "SELECT * FROM ing";
+    $imagesResult = $conn->query($imagesQuery);
+
+    // Display images as thumbnails
+    if ($imagesResult->num_rows > 0) {
+        while ($row = $imagesResult->fetch_assoc()) {
+            echo '<img class="image-thumb" src="' . $row['path'] . '" alt="' . $row['title'] . '" onclick="toggleSelection(this)">';
+        }
+    } else {
+        echo "No images found";
+    }
+
+    // Close connection
+    $conn->close();
+    ?>
+</div>
+
+<button class="delete-btn" onclick="deleteImages()">Delete Selected Images</button>
 
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteImages'])) {
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "ag";
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteUser'])) {
+    $selectedUser = $_POST['userToDelete'];
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -146,27 +245,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteImages'])) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    if (isset($_POST['userToDelete'])) {
-        $selectedUser = $_POST['userToDelete'];
-
-        $deleteImagesQuery = "DELETE FROM ing WHERE username = '$selectedUser'";
-        if ($conn->query($deleteImagesQuery) === TRUE) {
-            $deleteDataQuery = "DELETE FROM userdata WHERE Username = '$selectedUser'";
-            if ($conn->query($deleteDataQuery) === TRUE) {
-                echo "<div class='popup' id='successMsg'>User '$selectedUser' data deleted successfully.</div>";
-                echo "<script>document.getElementById('successMsg').style.display = 'block'; closeMsg();</script>";
-            } else {
-                echo "Error deleting user's data: " . $conn->error;
-            }
+    // Delete images associated with the user
+    $deleteImagesQuery = "DELETE FROM ing WHERE username = '$selectedUser'";
+    if ($conn->query($deleteImagesQuery) === TRUE) {
+        // Delete user data
+        $deleteDataQuery = "DELETE FROM userdata WHERE Username = '$selectedUser'";
+        if ($conn->query($deleteDataQuery) === TRUE) {
+            echo "<div class='popup' id='successMsg'>User '$selectedUser' data deleted successfully.</div>";
+            echo "<script>document.getElementById('successMsg').style.display = 'block'; closeMsg();</script>";
         } else {
-            echo "Error deleting user's images: " . $conn->error;
+            echo "Error deleting user's data: " . $conn->error;
         }
     } else {
-        echo "No user selected for deletion";
+        echo "Error deleting user's images: " . $conn->error;
     }
 
     $conn->close();
 }
 ?>
+
 </body>
 </html>

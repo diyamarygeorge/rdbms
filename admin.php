@@ -35,8 +35,6 @@
 
         .dashboard-container {
             background-color: #2c3e50;
-            padding: 20px;
-            margin-top: 30px;
         }
 
         .dashboard-container h1 {
@@ -149,11 +147,34 @@
             padding: 2px 16px;
             color: white;
         }
+        .delete-button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+   
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+
+        #pieChart {
+            width: 200px;
+            height: 200px;
+            position: center;
+        }
     </style>
 </head>
 <body>
 <div class="black-bar">
     <h1>Art Gallery</h1>
+    <button class="delete-button" onclick="window.location.href = 'delete_users.php';">Delete Users/Photos</button>
 </div>
 <a href="index.php" class="back-to-home">&#127968;</a>
 <div class="dashboard-container">
@@ -189,30 +210,55 @@
 
         // Retrieve user details from the "userdata" table
         $userDetailsQuery = "SELECT u.*, COUNT(i.path) AS total_photos FROM userdata u LEFT JOIN ing i ON u.Username = i.Username GROUP BY u.Username";
-        $userDetailsResult = $conn->query($userDetailsQuery);
 
-        if ($userDetailsResult->num_rows > 0) {
-            echo '<h3>User Details</h3>';
-            echo '<table>';
-            echo '<tr><th>Username</th><th>Email</th><th>Total Photos</th><th>Images</th></tr>';
-            while ($userRow = $userDetailsResult->fetch_assoc()) {
-                echo '<tr>';
-                echo '<td>' . $userRow['Username'] . '</td>';
-                echo '<td>' . $userRow['Email'] . '</td>';
-                echo '<td>' . $userRow['total_photos'] . '</td>';
-                echo '<td class="image-container">';
-                // Retrieve images for this user
-                $userImagesQuery = "SELECT * FROM ing WHERE Username = '{$userRow['Username']}'";
-                $userImagesResult = $conn->query($userImagesQuery);
-                while ($imageRow = $userImagesResult->fetch_assoc()) {
-                    echo '<img src="' . $imageRow['path'] . '" alt="Image" onclick="showImageDetails(\'' . $imageRow['path'] . '\', \'' . $imageRow['title'] . '\', \'' . $imageRow['description'] . '\', \'' . $imageRow['category'] . '\', \'' . $imageRow['orientation'] . '\', \'' . $imageRow['uploaded_at'] . '\')">';
-                }
-                echo '</td>'; // Close image-container
-                echo '</tr>';
+// Fetch all user details including additional columns
+$userDetailsQuery = "SELECT u.*, COUNT(i.path) AS total_photos 
+                     FROM userdata u 
+                     LEFT JOIN ing i ON u.Username = i.Username 
+                     GROUP BY u.Username";
+
+$userDetailsResult = $conn->query($userDetailsQuery);
+
+if ($userDetailsResult->num_rows > 0) {
+    echo '<h3>User Details</h3>';
+    echo '<table>';
+    echo '<tr><th>User ID</th><th>Username</th><th>Password</th><th>Email</th><th>Phone No</th><th>Name</th><th>Total Photos</th><th>Images</th></tr>';
+    while ($userRow = $userDetailsResult->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td>' . $userRow['user_id'] . '</td>';
+        echo '<td>' . $userRow['Username'] . '</td>';
+        echo '<td>' . $userRow['Password'] . '</td>';
+        echo '<td>' . $userRow['Email'] . '</td>';
+        echo '<td>' . $userRow['Phone no'] . '</td>';
+        echo '<td>' . $userRow['Name'] . '</td>';
+        echo '<td>' . $userRow['total_photos'] . '</td>';
+        echo '<td class="image-container">';
+        // Retrieve images for this user
+        $userImagesQuery = "SELECT * FROM ing WHERE Username = '{$userRow['Username']}'";
+        $userImagesResult = $conn->query($userImagesQuery);
+        while ($imageRow = $userImagesResult->fetch_assoc()) {
+            echo '<img src="' . $imageRow['path'] . '" alt="Image" onclick="showImageDetails(\'' . $imageRow['path'] . '\', \'' . $imageRow['title'] . '\', \'' . $imageRow['description'] . '\', \'' . $imageRow['category'] . '\', \'' . $imageRow['orientation'] . '\', \'' . $imageRow['uploaded_at'] . '\')">';
+        }
+        echo '</td>'; // Close image-container
+        echo '</tr>';
+    }
+    echo '</table>';
+} else {
+    echo '<p>No user details available.</p>';
+}
+
+
+        // Fetch data from the database for the pie chart
+        $categoryCountQuery = "SELECT category, COUNT(*) AS count FROM ing GROUP BY category";
+        $categoryCountResult = $conn->query($categoryCountQuery);
+
+        $categoryLabels = [];
+        $categoryCounts = [];
+        if ($categoryCountResult->num_rows > 0) {
+            while ($row = $categoryCountResult->fetch_assoc()) {
+                $categoryLabels[] = $row['category'];
+                $categoryCounts[] = $row['count'];
             }
-            echo '</table>';
-        } else {
-            echo '<p>No user details available.</p>';
         }
 
         $conn->close();
@@ -230,9 +276,9 @@
 </div>
 
 <div class="dashboard-container">
-    <h1>Admin Dashboard</h1>
+    <h1>GRAPHS</h1>
     <!-- Add canvas for pie chart -->
-    <canvas id="pieChart" width="400" height="400"></canvas>
+    <canvas id="pieChart" width="300" height="300" style="max-width: 25%; height: 25%;"></canvas>
     <!-- Add canvas for bar graph -->
     <canvas id="barGraph" width="400" height="400"></canvas>
     <!-- Rest of your content -->
@@ -256,6 +302,32 @@
         modal.style.display = "none";
     }
     
+    // Get data for the pie chart
+    const pieChartData = {
+        labels: <?php echo json_encode($categoryLabels); ?>,
+        datasets: [{
+            data: <?php echo json_encode($categoryCounts); ?>,
+            backgroundColor: [
+                '#ff6384',
+                '#36a2eb',
+                '#ffce56',
+                '#4bc0c0',
+                '#9966ff',
+                '#ff9966'
+            ]
+        }]
+    };
+
+    // Draw the pie chart
+    const pieChartCanvas = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieChartCanvas, {
+        type: 'pie',
+        data: pieChartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
 </script>
 </body>
 </html>
