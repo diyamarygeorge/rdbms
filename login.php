@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 $servername = "localhost";
@@ -16,6 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
+    if ($username === "admin" && $password === "admin@123") {
+        header("Location: admin.php");
+        exit();
+    }
+
     $sql = "SELECT * FROM userdata WHERE Username = '$username' AND Password = '$password'";
     $result = $conn->query($sql);
 
@@ -23,13 +29,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         $_SESSION['username'] = $username; // Store the username in the session
         header("Location: welcome.php");
         exit();
-    } else {
-        $login_error = "Invalid username or password";
+    }
+    else{
+        echo '<script>alert("Wrong username or password");</script>';
+        
     }
 }
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,64 +46,51 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora&display=swap">
     <style>
         /* Add your CSS styling here */
-        // ... (your existing CSS)
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Lora', serif;
+            background-color: black;
             margin: 0;
             padding: 0;
-            background-image: url('https://drive.google.com/uc?id=1-3JGsfOcDwYxARBaEeFzjzSg9CkLtrbl');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: #fff;
-        }
-
-        header {
-            background-color: yellow;
-            padding: 10px 0;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        h2 {
-            color: #fff;
+            color: white;
         }
 
         form {
-            max-width: 400px;
-            margin: 20px auto;
+            width: 400px; 
+            margin: 150px 700px;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
+            border-radius: 25px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* Added */
+            z-index: 2; /* Added */
         }
 
         label {
-            color: black;
+            color: white;
             display: block;
             margin-bottom: 8px;
+            border-radius: 25px;
         }
 
         input {
             width: 100%;
+            border-radius: 25px;
             padding: 8px;
             margin-bottom: 16px;
             box-sizing: border-box;
         }
 
         input[type="submit"] {
-            background-color: #4caf50;
-            color: #fff;
+            background-color: gold;
+            color: black;
+            border-radius: 25px;
             cursor: pointer;
         }
 
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: darkgoldenrod;
         }
 
         p {
@@ -110,26 +106,80 @@ $conn->close();
             right: 20px;
             color: #333;
         }
+        .left-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .black-background {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 20%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0,0,1,1), rgba(0,0,1,1), rgba(0, 0, 0, 1));
+            z-index: 0;
+        }
+        .log {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: white;
+            position: absolute;
+            top: 23%;
+            right: 26%; /* Adjust the value as needed */
+            transform: translateY(-50%);
+        }
+        .log2 {
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        position: absolute;
+        top: 60%;
+        right: 22%; /* Adjust the value as needed */
+        transform: translateY(-50%);
+        z-index: 3; /* Ensure link is clickable */
+    }   
     </style>
 </head>
 <body>
-    <header>
-        <h1>Art Gallery</h1>
-    </header>
-    <h2>Login</h2>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+
+    <img src="imgs/bg2.jpg" alt="Left Image" class="left-image">
+
+    <div class="black-background"></div>
+    
+
+    
+    <div class="log">LOGIN</div>
+    
+    <form id="loginForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" onsubmit="return validateForm()">
         <!-- Login form elements here -->
         <label for="username">Username:</label>
-        <input type="text" name="username" required>
+        <input type="text" id="username" name="username" required>
         <br>
         <label for="password">Password:</label>
-        <input type="password" name="password" required>
+        <input type="password" id="password" name="password" required>
         <br>
         <input type="submit" name="login" value="Login">
-        <?php if (isset($login_error)) echo "<p>$login_error</p>"; ?>
+        <p id="loginError"></p> <!-- Placeholder for error message -->
     </form>
-        <?php if (isset($login_error)) echo "<p>$login_error</p>"; ?>
-    </form>
+    <div class="log2"><a href="signup.php" style="color: gold;">Don't have an account?</a></div>
+
+
+    <script>
+        function validateForm() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            if (username == "" || password == "") {
+                alert("Username and password must be filled out");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 </html>

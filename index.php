@@ -5,64 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login and Sign Up</title>
     <style>
-        /* Add your CSS styling here */
         body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    background-image: url('https://drive.google.com/uc?id=1-3JGsfOcDwYxARBaEeFzjzSg9CkLtrbl');
-    background-size: cover;
-    background-position: bottom;
-    background-repeat: repeat;
-    color: #fff; /* Set text color to white or another color that contrasts well with the background */
-}
+            font-family: 'Lora', serif; /* Using Lora font */
+            background: black;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-header {
-    background-color: yellow;
-    padding: 10px 0;
-}
+        .left-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+        }
 
-h1 {
-    color: #333;
-}
+        .black-background {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 20%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0,0,1,1), rgba(0,0,1,1), rgba(0, 0, 0, 1));
+            z-index: 0;
+        }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
+        table {
+            position: absolute;
+            margin-top: 300px;
+            top: 50%;
+            right: 12%;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
 
-li {
-    display: inline-block;
-    margin: 10px;
-}
+        td {
+            padding: 10px;
+        }
 
-a {
-    text-decoration: none;
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
+        .button {
+            display: inline-block;
+            text-align: center;
+            width: 200px;
+            text-decoration: none;
+            background-color: gold;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
 
-a:hover {
-    background-color: #45a049;
-}
+        .button:hover {
+            background-color: goldenrod;
+        }
 
-
+        .welcome-message {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: white;
+        }
     </style>
+    <!-- Importing Lora font from Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora&display=swap">
 </head>
-<body>
-    <header>
-        <h1>Art Gallery</h1>
-    </header>
-    <h2>Select an Option</h2>
-    <ul>
-        <li><a href="login.php">Login</a></li>
-        <li><a href="signup.php">Sign Up</a></li>
-        <button onclick="window.location.href = 'admin.php'" style="position: fixed; bottom: 20px; right: 20px;">Go to Admin Page</button>
+<body>  
+    <img src="imgs/bg2.jpg" alt="Left Image" class="left-image">
 
-    </ul>
+    <div class="black-background"></div>
+    
+    <!-- Table for Buttons -->
+    <table>
+        <!-- Welcome Message Row -->
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <div class="welcome-message">Welcome to our Art Gallery</div>
+            </td>
+        </tr>
+        <!-- Login Button Row -->
+        <tr>
+            <td><a class="button" href="login.php">Login</a></td>
+        </tr>
+        <!-- Sign Up Button Row -->
+        <tr>
+            <td><a class="button" href="signup.php">Sign Up</a></td>
+        </tr>
+    </table>
 </body>
 </html>
