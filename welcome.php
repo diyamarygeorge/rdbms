@@ -60,6 +60,11 @@ session_start(); // Place this at the very beginning of your PHP code
             cursor: pointer; /* Add cursor pointer to indicate clickability */
         }
 
+        .image-container img:hover {
+            transform: scale(1.1);
+            z-index:3;
+        }
+
         .profile-button {
             position: absolute;
             top: 50px;
@@ -112,8 +117,8 @@ session_start(); // Place this at the very beginning of your PHP code
         }
 
         .modal img {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 50%;
+            max-height: 50%;
             object-fit: contain; /* Ensure the image retains its aspect ratio */
             display: block;
             margin: auto;
@@ -198,7 +203,7 @@ session_start(); // Place this at the very beginning of your PHP code
 
  
     <select id="category-filter" onchange="filterImages()">
-    <option value="">Select Category</option>
+    <option value="all">All Categories</option>
                     <option value="Realism">Realism</option>
                     <option value="Impressionism">Impressionism</option>
                     <option value="Abstract Art">Abstract Art</option>
@@ -254,7 +259,8 @@ session_start(); // Place this at the very beginning of your PHP code
 
         // Display images
         foreach ($imageData as $data) {
-            echo '<img src="' . $data['path'] . '" alt="' . $data['description'] . '" data-username="' . $data['username'] . '" data-description="' . addslashes($data['description']) . '" data-details=\'' . json_encode($data) . '\' data-category="' . $data['category'] . '" data-orientation="' . $data['orientation'] . '" onclick="openModal(this)">';
+            // Add style attribute to maintain aspect ratio
+            echo '<img src="' . $data['path'] . '" alt="' . $data['description'] . '" data-username="' . $data['username'] . '" data-description="' . addslashes($data['description']) . '" data-details=\'' . json_encode($data) . '\' data-category="' . $data['category'] . '" data-orientation="' . $data['orientation'] . '" onclick="openModal(this)" style="object-fit: contain;">';
         }
         
         
@@ -282,7 +288,6 @@ session_start(); // Place this at the very beginning of your PHP code
         </div>
     </div>
 </div>
-
 <script>
     function openModal(image) {
         const username = image.getAttribute('data-username');
@@ -303,38 +308,36 @@ session_start(); // Place this at the very beginning of your PHP code
             "Orientation: " + orientationText; // Use orientation text
     }
 
-
     function closeModal() {
         document.getElementById("myModal").style.display = "none";
     }
 
-
     function filterImages() {
-    const orientationFilter = document.getElementById('orientation-filter').value;
-    const categoryFilter = document.getElementById('category-filter').value;
+        const orientationFilter = document.getElementById('orientation-filter').value;
+        const categoryFilter = document.getElementById('category-filter').value;
 
-    console.log("Orientation Filter:", orientationFilter);
-    console.log("Category Filter:", categoryFilter);
+        console.log("Orientation Filter:", orientationFilter);
+        console.log("Category Filter:", categoryFilter);
 
-    const images = document.querySelectorAll('.image-container img');
+        const images = document.querySelectorAll('.image-container img');
 
-    images.forEach(image => {
-        const orientation = image.getAttribute('data-orientation');
-        const category = image.getAttribute('data-category');
+        images.forEach(image => {
+            const orientation = image.getAttribute('data-orientation');
+            const category = image.getAttribute('data-category');
 
-        console.log("Image Orientation:", orientation);
-        console.log("Image Category:", category);
+            console.log("Image Orientation:", orientation);
+            console.log("Image Category:", category);
 
-        if ((orientationFilter === 'all' || orientation === orientationFilter) && 
-            (categoryFilter === 'all' || category === categoryFilter || (category === 'undefined' && categoryFilter === 'other'))) {
-            image.style.display = 'block';
-        } else {
-            image.style.display = 'none';
-        }
-    });
-}
-
+            if ((orientationFilter === 'all' || orientation === orientationFilter) &&
+                (categoryFilter === 'all' || category === categoryFilter || (category === undefined && categoryFilter === 'other'))) {
+                image.style.display = 'block';
+            } else {
+                image.style.display = 'none';
+            }
+        });
+    }
 </script>
+
 
 </body>
 </html>

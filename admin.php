@@ -163,12 +163,12 @@
         .delete-button:hover {
             background-color: #c0392b;
         }
-
-        #pieChart {
-            width: 200px;
-            height: 200px;
-            position: center;
+        .size{
+            height:50vh;
+            width:50vh;
         }
+
+       
     </style>
 </head>
 <body>
@@ -274,14 +274,11 @@ if ($userDetailsResult->num_rows > 0) {
         <div class="modal-body" id="imageDetails"></div>
     </div>
 </div>
-
-<div class="dashboard-container">
+<div class="size">
     <h1>GRAPHS</h1>
     <!-- Add canvas for pie chart -->
-    <canvas id="pieChart" width="300" height="300" style="max-width: 25%; height: 25%;"></canvas>
-    <!-- Add canvas for bar graph -->
-    <canvas id="barGraph" width="400" height="400"></canvas>
-    <!-- Rest of your content -->
+    <!-- Add canvas for pie chart with 50% of screen size -->
+    <canvas id="pieChart" style="width: 50vw; height: 50vh;"></canvas>
 </div>
 
 
@@ -325,7 +322,7 @@ if ($userDetailsResult->num_rows > 0) {
         data: pieChartData,
         options: {
             responsive: true,
-            maintainAspectRatio: true
+            
         }
     });
 </script>

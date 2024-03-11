@@ -243,7 +243,7 @@ $conn->close();
         }
 
         if (!passwordRegex.test(password)) {
-            alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character");
+            alert("Password must be at least 8 characters long and \ncontain at least one uppercase letter, \none lowercase letter, \none number, and \none special character");
             return false;
         }
 
