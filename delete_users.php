@@ -52,7 +52,7 @@
             border-radius: 4px;
         }
 
-        button[type="submit"] {
+        button[type="submit"], .delete-btn {
             margin-top: 10px;
             padding: 10px 15px;
             background-color: #4CAF50;
@@ -62,7 +62,7 @@
             cursor: pointer;
         }
 
-        button[type="submit"]:hover {
+        button[type="submit"]:hover, .delete-btn:hover {
             background-color: #45a049;
         }
 
@@ -105,19 +105,6 @@
             border-color: #007bff;
         }
 
-        .delete-btn {
-            padding: 8px 15px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .delete-btn:hover {
-            background-color: #c0392b;
-        }
         hr {
             border: 0;
             height: 1px;
@@ -127,42 +114,56 @@
         }
     </style>
     <script>
-    // Function to handle image selection
-    function toggleSelection(image) {
-        image.classList.toggle('selected');
-    }
-
-    // Function to delete selected images
-    function deleteImages() {
-        var selectedImages = document.querySelectorAll('.image-thumb.selected');
-        if (selectedImages.length === 0) {
-            alert("Please select at least one image to delete.");
-            return;
+        // Function to handle image selection
+        function toggleSelection(image) {
+            image.classList.toggle('selected');
         }
 
-        if (confirm("Are you sure you want to delete the selected images?")) {
-            // Prepare an array to hold the image paths
-            var imagePaths = [];
-            selectedImages.forEach(function (image) {
-                imagePaths.push(image.getAttribute('src'));
-                image.parentNode.removeChild(image); // Remove from DOM
-            });
+        // Function to delete selected images
+        function deleteImages() {
+            var selectedImages = document.querySelectorAll('.image-thumb.selected');
+            if (selectedImages.length === 0) {
+                alert("Please select at least one image to delete.");
+                return;
+            }
 
-            // Send the array of image paths to a PHP script for deletion
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'delete_images.php';
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'imagePaths';
-            input.value = JSON.stringify(imagePaths);
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
+            if (confirm("Are you sure you want to delete the selected images?")) {
+                // Prepare an array to hold the image paths
+                var imagePaths = Array.from(selectedImages).map(image => image.getAttribute('src'));
+
+                // Send the array of image paths to a PHP script for deletion
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '';
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'imagePaths';
+                input.value = JSON.stringify(imagePaths);
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
-    }
-</script>
 
+        // Function to handle form submission for deleting user data
+        function deleteUser() {
+            var selectedUser = document.getElementById('users').value;
+
+            if (confirm("Are you sure you want to delete the selected user's data?")) {
+                // Send the selected user to a PHP script for deletion
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '';
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'userToDelete';
+                input.value = selectedUser;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
 </head>
 <body>
 
@@ -170,7 +171,7 @@
 
 <a href="admin.php" class="back-btn">Back to Admin Dashboard</a>
 
-<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+<form>
     <?php
     $servername = "localhost";
     $username = "root";
@@ -202,7 +203,7 @@
     $conn->close();
     ?>
 
-    <button type="submit" name="deleteUser">Delete Selected User's Data</button>
+    <button type="button" onclick="deleteUser()">Delete Selected User's Data</button>
 </form>
 <hr>
 <h1>DELETE IMAGES</h1>
@@ -236,7 +237,7 @@
 <button class="delete-btn" onclick="deleteImages()">Delete Selected Images</button>
 
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteUser'])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userToDelete'])) {
     $selectedUser = $_POST['userToDelete'];
 
     $conn = new mysqli($servername, $username, $password, $dbname);
