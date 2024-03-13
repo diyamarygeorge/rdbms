@@ -214,41 +214,50 @@ $conn->close();
 <div class="log2"><a href="login.php" style="color: gold;">Already an existing user?? Sign in</a></div>
 <script>
     function validateForm() {
-        var name = document.getElementById('name').value;
-        var email = document.getElementById('email').value;
-        var phone = document.getElementById('phone').value;
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var phone = document.getElementById('phone').value;
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
 
-        // Regular expressions for email and phone number validation
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        var phoneRegex = /^\d{10}$/;
+    // Regular expressions for email and phone number validation
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var phoneRegex = /^\d{10}$/;
 
-        // Regular expression for password validation
-        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
+    // Regular expression for password validation
+    var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
 
-        if (!name || !email || !phone || !username || !password) {
-            alert("All fields are required");
-            return false;
-        }
+    // Regular expression for name validation (only alphabetic characters)
+    var nameRegex = /^[A-Za-z]+$/;
 
-        if (!emailRegex.test(email)) {
-            alert("Invalid email address");
-            return false;
-        }
-
-        if (!phoneRegex.test(phone)) {
-            alert("Invalid phone number (must be 10 digits)");
-            return false;
-        }
-
-        if (!passwordRegex.test(password)) {
-            alert("Password must be at least 8 characters long and \ncontain at least one uppercase letter, \none lowercase letter, \none number, and \none special character");
-            return false;
-        }
-
-        return true;
+    if (!name || !email || !phone || !username || !password) {
+        alert("All fields are required");
+        return false;
     }
+
+    if (!nameRegex.test(name)) {
+        alert("Name must consist of only alphabetic characters");
+        return false;
+    }
+
+    if (!emailRegex.test(email)) {
+        alert("Invalid email address");
+        return false;
+    }
+
+    if (!phoneRegex.test(phone)) {
+        alert("Invalid phone number (must be 10 digits)");
+        return false;
+    }
+
+    if (!passwordRegex.test(password)) {
+        alert("Password must be at least 8 characters long and \ncontain at least one uppercase letter, \none lowercase letter, \none number, and \none special character");
+        return false;
+    }
+
+    return true;
+}
+
 </script>
 </body>
 </html>

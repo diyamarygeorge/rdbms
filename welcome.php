@@ -205,7 +205,7 @@ session_start(); // Place this at the very beginning of your PHP code
     <select id="category-filter" onchange="filterImages()">
     <option value="all">All Categories</option>
                     <option value="Realism">Realism</option>
-                    <option value="Impressionism">Impressionism</option>
+                    <option value="Impression">Impressionism</option>
                     <option value="Abstract Art">Abstract Art</option>
                     <option value="Surrealism">Surrealism</option>
                     <option value="Expression">Expressionism</option>
